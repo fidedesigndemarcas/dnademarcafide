@@ -1,0 +1,626 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root {
+  --white: #FFFFFF;
+  --gray-50: #FAFAFA;
+  --gray-100: #F4F4F4;
+  --gray-200: #E8E8E8;
+  --gray-300: #D0D0D0;
+  --gray-400: #ABABAB;
+  --gray-500: #7A7A7A;
+  --gray-700: #3C3C3C;
+  --gray-900: #1A1A1A;
+  --black: #0D0D0D;
+  --font: 'Montserrat', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--white);color:var(--gray-900);min-height:100vh;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* ── LANDING ── */
+#screen-landing{flex-direction:row;min-height:100vh;}
+.l-left{flex:1;background:var(--black);padding:3rem 3.5rem;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;}
+.l-left::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent 79px,rgba(255,255,255,.018) 79px,rgba(255,255,255,.018) 80px),repeating-linear-gradient(0deg,transparent 0,transparent 79px,rgba(255,255,255,.018) 79px,rgba(255,255,255,.018) 80px);pointer-events:none;}
+.l-right{width:400px;flex-shrink:0;background:var(--white);border-left:1px solid var(--gray-200);padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:center;}
+
+/* logo */
+.fide-logo{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.fide-grid{display:grid;grid-template-columns:repeat(3,6px);grid-template-rows:repeat(3,6px);gap:3px;}
+.fide-grid span{width:6px;height:6px;border-radius:1px;background:var(--gray-500);}
+.fide-grid span:nth-child(3),.fide-grid span:nth-child(6){opacity:0;}
+.fide-word{font-size:18px;font-weight:700;letter-spacing:.22em;color:var(--gray-500);text-transform:uppercase;}
+
+.l-hero{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center;padding:3rem 0;}
+.l-eyebrow{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gray-500);margin-bottom:1.75rem;}
+.l-headline{font-size:clamp(2.6rem,4.5vw,4rem);font-weight:800;line-height:1.04;letter-spacing:-.035em;color:var(--white);margin-bottom:1.75rem;}
+.l-headline em{font-style:normal;color:var(--gray-400);font-weight:300;display:block;font-size:.65em;letter-spacing:-.01em;margin-top:6px;}
+.l-desc{font-size:13px;font-weight:400;color:var(--gray-500);line-height:1.8;max-width:440px;margin-bottom:2.5rem;}
+.l-metrics{display:flex;gap:2.5rem;}
+.metric-num{font-size:1.9rem;font-weight:800;color:var(--white);letter-spacing:-.03em;display:block;line-height:1;}
+.metric-label{font-size:9px;font-weight:600;color:var(--gray-500);letter-spacing:.1em;text-transform:uppercase;margin-top:5px;display:block;}
+.l-footer{position:relative;z-index:1;font-size:11px;color:var(--gray-700);}
+
+.r-eyebrow{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gray-400);margin-bottom:2rem;}
+.r-title{font-size:20px;font-weight:700;color:var(--gray-900);letter-spacing:-.025em;line-height:1.3;margin-bottom:.6rem;}
+.r-sub{font-size:12px;font-weight:400;color:var(--gray-500);line-height:1.75;margin-bottom:2rem;}
+.feat-list{list-style:none;margin-bottom:2.5rem;display:flex;flex-direction:column;gap:10px;}
+.feat-list li{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:500;color:var(--gray-700);}
+.feat-check{width:18px;height:18px;border:1.5px solid var(--gray-300);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:800;color:var(--gray-900);}
+
+/* BOTÕES — alto contraste em repouso */
+.btn-start{width:100%;background:var(--gray-900);color:var(--white);border:2px solid var(--gray-900);padding:14px;font-family:var(--font);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .18s;margin-bottom:12px;}
+.btn-start:hover{background:var(--black);border-color:var(--black);}
+.r-note{font-size:10px;color:var(--gray-400);text-align:center;line-height:1.6;}
+
+/* ── HEADER ── */
+.app-hdr{height:58px;background:var(--white);border-bottom:1px solid var(--gray-200);display:flex;align-items:center;padding:0 1.5rem;gap:14px;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.hdr-logo{display:flex;align-items:center;gap:8px;}
+.hdr-grid{display:grid;grid-template-columns:repeat(3,5px);grid-template-rows:repeat(3,5px);gap:2.5px;}
+.hdr-grid span{width:5px;height:5px;border-radius:1px;background:var(--gray-400);}
+.hdr-grid span:nth-child(3),.hdr-grid span:nth-child(6){opacity:0;}
+.hdr-word{font-size:13px;font-weight:700;letter-spacing:.18em;color:var(--gray-500);text-transform:uppercase;}
+.hdr-sep{width:1px;height:16px;background:var(--gray-200);}
+.hdr-product{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-500);}
+.hdr-progress{flex:1;display:flex;align-items:center;gap:12px;}
+.prog-track{flex:1;height:2px;background:var(--gray-200);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--gray-900);border-radius:2px;transition:width .4s ease;}
+.prog-txt{font-size:11px;font-weight:700;color:var(--gray-500);white-space:nowrap;letter-spacing:.04em;min-width:48px;text-align:right;}
+
+/* ── QUIZ ── */
+#screen-quiz{background:var(--gray-100);}
+.quiz-scroll{flex:1;overflow-y:auto;}
+.quiz-inner{max-width:620px;margin:0 auto;padding:2.5rem 1.5rem 1.5rem;}
+
+.sec-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:2rem;}
+.sec-pill{padding:4px 12px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:var(--white);color:var(--gray-700);border:1.5px solid var(--gray-300);transition:all .15s;}
+.sec-pill.active{background:var(--gray-900);color:var(--white);border-color:var(--gray-900);}
+
+.q-card{background:var(--white);border:1px solid var(--gray-200);border-radius:6px;padding:2rem 2rem 1.75rem;}
+.q-sec-label{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.75rem;}
+.q-counter{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.06em;margin-bottom:.4rem;}
+.q-text{font-size:18px;font-weight:700;line-height:1.3;color:var(--gray-900);letter-spacing:-.02em;margin-bottom:.5rem;}
+.q-hint{font-size:12px;font-weight:400;color:var(--gray-400);line-height:1.7;margin-bottom:1.75rem;}
+
+/* Opções — border visível + texto forte em repouso */
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:center;gap:13px;padding:12px 15px;background:var(--white);border:1.5px solid var(--gray-300);border-radius:4px;cursor:pointer;text-align:left;font-family:var(--font);font-size:13px;font-weight:600;color:var(--gray-700);transition:all .12s;width:100%;}
+.opt:hover{border-color:var(--gray-900);color:var(--gray-900);background:var(--gray-50);}
+.opt.sel{background:var(--gray-900);border-color:var(--gray-900);color:var(--white);}
+.opt-radio{width:15px;height:15px;border:2px solid currentColor;border-radius:50%;flex-shrink:0;opacity:.45;position:relative;}
+.opt.sel .opt-radio{opacity:1;}
+.opt.sel .opt-radio::after{content:'';position:absolute;top:3px;left:3px;width:5px;height:5px;background:var(--white);border-radius:50%;}
+
+/* Scale — números visíveis em repouso */
+.scale-row{display:flex;gap:6px;}
+.scale-btn{flex:1;height:46px;background:var(--white);border:1.5px solid var(--gray-300);border-radius:4px;cursor:pointer;font-family:var(--font);font-size:15px;font-weight:700;color:var(--gray-700);transition:all .12s;}
+.scale-btn:hover{border-color:var(--gray-900);color:var(--gray-900);background:var(--gray-50);}
+.scale-btn.sel{background:var(--gray-900);border-color:var(--gray-900);color:var(--white);}
+.scale-labels{display:flex;justify-content:space-between;margin-top:8px;font-size:10px;font-weight:600;color:var(--gray-500);}
+
+.q-ta{width:100%;padding:13px 15px;border:1.5px solid var(--gray-300);border-radius:4px;font-family:var(--font);font-size:13px;font-weight:400;color:var(--gray-900);background:var(--white);resize:vertical;min-height:90px;outline:none;transition:border-color .15s;line-height:1.6;}
+.q-ta:focus{border-color:var(--gray-900);}
+.q-ta::placeholder{color:var(--gray-300);}
+
+/* ── NAV ── */
+.quiz-nav{background:var(--white);border-top:1px solid var(--gray-200);padding:1rem 1.5rem;display:flex;align-items:center;gap:12px;flex-shrink:0;position:sticky;bottom:0;z-index:50;}
+
+/* Anterior — borda escura + texto escuro em repouso */
+.btn-prev{display:flex;align-items:center;gap:8px;background:var(--white);border:2px solid var(--gray-700);color:var(--gray-700);padding:10px 18px;font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .15s;}
+.btn-prev:hover:not(:disabled){border-color:var(--black);color:var(--black);}
+.btn-prev:disabled{opacity:.2;cursor:not-allowed;}
+
+.nav-mid{flex:1;text-align:center;font-size:11px;font-weight:700;color:var(--gray-500);letter-spacing:.06em;}
+
+/* Próximo — preenchido escuro sempre visível */
+.btn-next{display:flex;align-items:center;gap:8px;background:var(--gray-900);color:var(--white);border:2px solid var(--gray-900);padding:10px 20px;font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .15s;}
+.btn-next:hover:not(:disabled){background:var(--black);border-color:var(--black);}
+.btn-next:disabled{background:var(--gray-300);border-color:var(--gray-300);color:var(--white);cursor:not-allowed;}
+.btn-next.final{background:var(--gray-900);border-color:var(--gray-900);}
+
+/* ── LOADING ── */
+#screen-loading{background:var(--black);color:var(--white);align-items:center;justify-content:center;text-align:center;padding:3rem;}
+.load-ring{width:44px;height:44px;border:1.5px solid rgba(255,255,255,.08);border-top-color:rgba(255,255,255,.5);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 2rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.load-title{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:.5rem;}
+.load-sub{font-size:12px;font-weight:400;color:var(--gray-500);margin-bottom:3rem;}
+.load-steps{display:flex;flex-direction:column;gap:14px;text-align:left;max-width:360px;}
+.l-step{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:500;color:var(--gray-700);transition:color .4s;}
+.l-step.active{color:rgba(255,255,255,.85);}
+.l-step.done{color:var(--gray-500);}
+.l-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+
+/* ── REPORT ── */
+#screen-report{background:var(--gray-100);}
+.rpt-hero{background:var(--black);padding:3rem 2rem 4rem;}
+.rpt-hero-inner{max-width:700px;margin:0 auto;}
+.rpt-logo-bar{display:flex;align-items:center;gap:14px;margin-bottom:3rem;}
+.rpt-logo-grid{display:grid;grid-template-columns:repeat(3,5px);grid-template-rows:repeat(3,5px);gap:2.5px;}
+.rpt-logo-grid span{width:5px;height:5px;border-radius:1px;background:var(--gray-700);}
+.rpt-logo-grid span:nth-child(3),.rpt-logo-grid span:nth-child(6){opacity:0;}
+.rpt-logo-word{font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gray-700);text-transform:uppercase;}
+.rpt-logo-sep{width:1px;height:14px;background:rgba(255,255,255,.1);}
+.rpt-logo-tag{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gray-700);}
+.rpt-date{font-size:10px;font-weight:500;color:var(--gray-700);letter-spacing:.06em;margin-bottom:1.25rem;}
+.rpt-headline{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--white);margin-bottom:2.5rem;}
+.score-row{display:flex;align-items:center;gap:2rem;}
+.score-ring{width:88px;height:88px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.score-num{font-size:2rem;font-weight:800;color:var(--white);line-height:1;letter-spacing:-.04em;}
+.score-lbl{font-size:8px;font-weight:700;color:var(--gray-700);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
+.score-caption{font-size:12px;font-weight:400;color:var(--gray-500);line-height:1.75;max-width:380px;}
+
+.rpt-body{max-width:700px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.r-sec{margin-bottom:2.5rem;}
+.r-lbl{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray-400);margin-bottom:1rem;}
+.r-ttl{font-size:17px;font-weight:700;color:var(--gray-900);letter-spacing:-.02em;line-height:1.3;margin-bottom:.65rem;}
+.r-txt{font-size:13px;font-weight:400;color:var(--gray-500);line-height:1.8;}
+.r-div{height:1px;background:var(--gray-200);margin:2.5rem 0;}
+
+.insight-box{background:var(--gray-900);border-radius:6px;padding:1.5rem 1.75rem;margin-bottom:2.5rem;}
+.ins-tag{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray-500);margin-bottom:.75rem;}
+.ins-txt{font-size:14px;font-weight:600;color:var(--white);line-height:1.55;letter-spacing:-.01em;}
+
+.scores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:8px;margin-top:1.25rem;}
+.sc-card{background:var(--white);border:1px solid var(--gray-200);border-radius:5px;padding:1rem 1.25rem;}
+.sc-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400);margin-bottom:10px;}
+.sc-bar-row{display:flex;align-items:center;gap:10px;}
+.sc-track{flex:1;height:2px;background:var(--gray-200);border-radius:2px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:2px;}
+.sc-num{font-size:14px;font-weight:700;color:var(--gray-900);min-width:30px;text-align:right;}
+.chart-box{background:var(--white);border:1px solid var(--gray-200);border-radius:5px;padding:1.5rem;margin-top:8px;}
+
+.items{display:flex;flex-direction:column;gap:8px;margin-top:1.25rem;}
+.item-card{background:var(--white);border:1px solid var(--gray-200);border-radius:5px;padding:1rem 1.25rem;display:flex;gap:14px;align-items:flex-start;}
+.item-badge{width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px;}
+.badge-neg{background:var(--gray-100);color:var(--gray-900);border:1.5px solid var(--gray-300);}
+.badge-pos{background:var(--gray-100);color:var(--gray-900);border:1.5px solid var(--gray-300);}
+.badge-opp{background:var(--gray-900);color:var(--white);}
+.item-ttl{font-size:12px;font-weight:700;color:var(--gray-900);margin-bottom:3px;}
+.item-dsc{font-size:12px;font-weight:400;color:var(--gray-500);line-height:1.65;}
+
+.plan-list{margin-top:1.25rem;}
+.plan-item{display:flex;gap:14px;align-items:flex-start;padding:13px 15px;background:var(--white);border:1px solid var(--gray-200);margin-top:-1px;}
+.plan-item:first-child{border-radius:5px 5px 0 0;}
+.plan-item:last-child{border-radius:0 0 5px 5px;}
+.plan-n{width:22px;height:22px;border-radius:50%;background:var(--gray-900);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--white);flex-shrink:0;margin-top:1px;}
+.plan-txt{font-size:12px;font-weight:500;color:var(--gray-700);line-height:1.65;padding-top:2px;}
+
+/* ── SHARE ── */
+.share-bar{background:var(--white);border:1px solid var(--gray-200);border-radius:6px;padding:1.25rem 1.5rem;margin-top:1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.share-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gray-500);flex-shrink:0;}
+.share-input-wrap{flex:1;display:flex;align-items:center;gap:8px;min-width:200px;}
+.share-input{flex:1;padding:9px 12px;border:1.5px solid var(--gray-300);border-radius:3px;font-family:var(--font);font-size:11px;font-weight:500;color:var(--gray-700);background:var(--gray-100);outline:none;cursor:default;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Botão Copiar — preenchido em repouso */
+.btn-copy{display:flex;align-items:center;gap:6px;padding:9px 16px;background:var(--gray-900);color:var(--white);border:2px solid var(--gray-900);font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .15s;flex-shrink:0;white-space:nowrap;}
+.btn-copy:hover{background:var(--black);border-color:var(--black);}
+.btn-copy.done{background:var(--gray-500);border-color:var(--gray-500);}
+
+.share-sep{width:1px;height:28px;background:var(--gray-200);flex-shrink:0;}
+.share-socials{display:flex;gap:8px;align-items:center;}
+
+/* Botões sociais — borda visível em repouso */
+.btn-soc{display:flex;align-items:center;justify-content:center;width:36px;height:36px;background:var(--white);border:1.5px solid var(--gray-400);border-radius:3px;cursor:pointer;transition:all .15s;color:var(--gray-700);text-decoration:none;}
+.btn-soc:hover{border-color:var(--gray-900);color:var(--gray-900);background:var(--gray-100);}
+
+.copy-confirm{font-size:10px;font-weight:600;color:var(--gray-500);display:none;}
+.copy-confirm.show{display:block;}
+
+/* ── CTA ── */
+.cta-box{background:var(--gray-900);border-radius:6px;padding:2.5rem;margin-top:2.5rem;text-align:center;}
+.cta-tag{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray-500);margin-bottom:1rem;}
+.cta-ttl{font-size:19px;font-weight:700;color:var(--white);letter-spacing:-.025em;line-height:1.3;margin-bottom:.75rem;}
+.cta-txt{font-size:12px;font-weight:400;color:var(--gray-500);line-height:1.8;max-width:400px;margin:0 auto 2rem;}
+
+/* CTA button — borda branca visível em repouso */
+.btn-cta{background:var(--white);color:var(--gray-900);border:2px solid var(--white);padding:12px 30px;font-family:var(--font);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .18s;}
+.btn-cta:hover{background:transparent;color:var(--white);}
+
+.spin-sm{width:26px;height:26px;border:1.5px solid var(--gray-200);border-top-color:var(--gray-900);border-radius:50%;animation:spin .8s linear infinite;margin:3rem auto 1rem;}
+
+@media(max-width:680px){
+  #screen-landing{flex-direction:column;}
+  .l-left{padding:2rem;min-height:50vh;}
+  .l-right{width:100%;padding:2rem 1.5rem;border-left:none;border-top:1px solid var(--gray-200);}
+  .l-headline{font-size:2.2rem;}
+  .q-card{padding:1.5rem 1.25rem;}
+  .q-text{font-size:16px;}
+  .rpt-headline{font-size:1.4rem;}
+  .share-bar{flex-direction:column;align-items:flex-start;}
+  .share-input-wrap{width:100%;}
+  .share-sep{display:none;}
+  .score-row{flex-direction:column;align-items:flex-start;gap:1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ LANDING ═══ -->
+<div id="screen-landing" class="screen active">
+  <div class="l-left">
+    <div class="fide-logo">
+      <div class="fide-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="fide-word">FIDE</div>
+    </div>
+    <div class="l-hero">
+      <div class="l-eyebrow">Ferramenta estratégica de marca · 2025</div>
+      <h1 class="l-headline">DNA da<br>Marca™<em>Descubra o que sua marca<br>realmente comunica.</em></h1>
+      <p class="l-desc">Um diagnóstico guiado por IA que revela desalinhamentos de posicionamento, gargalos de comunicação e oportunidades estratégicas — em 15 minutos.</p>
+      <div class="l-metrics">
+        <div><span class="metric-num">7</span><span class="metric-label">Dimensões</span></div>
+        <div><span class="metric-num">35</span><span class="metric-label">Perguntas</span></div>
+        <div><span class="metric-num">15'</span><span class="metric-label">Diagnóstico</span></div>
+      </div>
+    </div>
+    <div class="l-footer">© 2025 FIDE Design · Todos os direitos reservados</div>
+  </div>
+  <div class="l-right">
+    <div class="r-eyebrow">Iniciar diagnóstico</div>
+    <h2 class="r-title">Entenda sua marca com clareza estratégica.</h2>
+    <p class="r-sub">Responda as perguntas com honestidade. A IA interpreta seus dados e gera um relatório com score, gargalos e plano de ação.</p>
+    <ul class="feat-list">
+      <li><div class="feat-check">✓</div>Score geral e por dimensão</li>
+      <li><div class="feat-check">✓</div>Diagnóstico de posicionamento</li>
+      <li><div class="feat-check">✓</div>Gargalos silenciosos identificados</li>
+      <li><div class="feat-check">✓</div>Plano de ação para 30 dias</li>
+      <li><div class="feat-check">✓</div>Radar chart com 6 dimensões</li>
+    </ul>
+    <button class="btn-start" onclick="startDiag()">Iniciar Diagnóstico →</button>
+    <p class="r-note">Não é um curso. Não é um teste genérico.<br>É uma consultoria estratégica assistida por IA.</p>
+  </div>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="screen-quiz" class="screen">
+  <div class="app-hdr">
+    <div class="hdr-logo">
+      <div class="hdr-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="hdr-word">FIDE</div>
+    </div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-product">DNA da Marca™</div>
+    <div class="hdr-progress">
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-txt" id="progTxt">1 / 35</div>
+    </div>
+  </div>
+  <div class="quiz-scroll">
+    <div class="quiz-inner">
+      <div class="sec-pills" id="secPills"></div>
+      <div id="qArea"></div>
+    </div>
+  </div>
+  <div class="quiz-nav">
+    <button class="btn-prev" id="btnPrev" onclick="goPrev()" disabled>← Anterior</button>
+    <div class="nav-mid" id="navMid">1 de 35</div>
+    <button class="btn-next" id="btnNext" onclick="goNext()" disabled>Próximo →</button>
+  </div>
+</div>
+
+<!-- ═══ LOADING ═══ -->
+<div id="screen-loading" class="screen">
+  <div>
+    <div class="load-ring"></div>
+    <h2 class="load-title">Analisando sua marca</h2>
+    <p class="load-sub">A IA está interpretando seus dados estratégicos</p>
+    <div class="load-steps">
+      <div class="l-step" id="ls0"><div class="l-dot"></div>Mapeando intenção de posicionamento</div>
+      <div class="l-step" id="ls1"><div class="l-dot"></div>Identificando gargalos de comunicação</div>
+      <div class="l-step" id="ls2"><div class="l-dot"></div>Calculando score por dimensão</div>
+      <div class="l-step" id="ls3"><div class="l-dot"></div>Gerando diagnóstico estratégico</div>
+      <div class="l-step" id="ls4"><div class="l-dot"></div>Estruturando plano de ação</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REPORT ═══ -->
+<div id="screen-report" class="screen">
+  <div class="rpt-hero">
+    <div class="rpt-hero-inner">
+      <div class="rpt-logo-bar">
+        <div class="rpt-logo-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="rpt-logo-word">FIDE</div>
+        <div class="rpt-logo-sep"></div>
+        <div class="rpt-logo-tag">DNA da Marca™</div>
+      </div>
+      <div class="rpt-date" id="rptDate"></div>
+      <h1 class="rpt-headline" id="rptTitle">Diagnóstico Estratégico de Marca</h1>
+      <div class="score-row">
+        <div class="score-ring">
+          <div class="score-num" id="scoreNum">—</div>
+          <div class="score-lbl">Score</div>
+        </div>
+        <div class="score-caption" id="scoreCaption">Gerando análise...</div>
+      </div>
+    </div>
+  </div>
+  <div class="rpt-body" id="rptBody">
+    <div style="text-align:center;padding:3rem;">
+      <div class="spin-sm"></div>
+      <p style="font-size:12px;color:var(--gray-400);font-weight:500;margin-top:1rem;">Gerando relatório personalizado...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SECS=[
+  {id:'negocio',label:'Negócio'},{id:'posicionamento',label:'Posicionamento'},
+  {id:'comunicacao',label:'Comunicação'},{id:'marca',label:'Marca'},
+  {id:'percepcao',label:'Percepção'},{id:'diferenciacao',label:'Diferenciação'},
+  {id:'maturidade',label:'Maturidade'},
+];
+const QS=[
+  {id:1,sec:'negocio',type:'text',text:'O que sua empresa vende?',hint:'Descreva seu produto ou serviço principal com suas próprias palavras.'},
+  {id:2,sec:'negocio',type:'choice',text:'Qual é o ticket médio do seu produto ou serviço principal?',opts:['Até R$500','R$500 a R$2.000','R$2.000 a R$10.000','Acima de R$10.000']},
+  {id:3,sec:'negocio',type:'choice',text:'Há quanto tempo sua empresa está no mercado?',opts:['Menos de 1 ano','1 a 3 anos','3 a 7 anos','Mais de 7 anos']},
+  {id:4,sec:'negocio',type:'text',text:'Quem é seu cliente ideal?',hint:'Pense em perfil, momento de vida, dor principal e aspiração.'},
+  {id:5,sec:'negocio',type:'choice',text:'Qual é o principal canal de aquisição de clientes hoje?',opts:['Instagram / Redes sociais','Indicação / boca a boca','Google / SEO / Ads','Eventos e networking','Outros']},
+  {id:6,sec:'posicionamento',type:'choice',text:'Como você deseja ser percebido pelo mercado?',opts:['Premium / luxo / exclusivo','Acessível / popular / democrático','Especialista / técnico / autoridade','Inovador / disruptivo / moderno','Humano / próximo / confiável']},
+  {id:7,sec:'posicionamento',type:'text',text:'O que faz sua empresa diferente de todos os concorrentes?',hint:'Se você tivesse 30 segundos para convencer alguém, o que diria?'},
+  {id:8,sec:'posicionamento',type:'scale',text:'O quanto você acredita que sua posição de mercado está clara para seus clientes?',min:'Nada clara',max:'Muito clara'},
+  {id:9,sec:'posicionamento',type:'choice',text:'Você atende um nicho específico ou um público amplo?',opts:['Nicho muito específico','Segmento definido mas amplo','Público bastante diversificado','Ainda não defini com clareza']},
+  {id:10,sec:'posicionamento',type:'scale',text:'Quão confiante você está no seu posicionamento atual de preço?',min:'Inseguro',max:'Muito seguro'},
+  {id:11,sec:'comunicacao',type:'choice',text:'Sua comunicação é predominantemente…',opts:['Emocional / inspiracional','Racional / técnica / educativa','Mistura equilibrada de ambas','Ainda não tenho clareza']},
+  {id:12,sec:'comunicacao',type:'choice',text:'Sua marca tem um tom de voz definido e documentado?',opts:['Sim, está bem definido e seguido','Tenho uma ideia, mas não está documentado','Cada canal tem um tom diferente','Ainda não pensei nisso']},
+  {id:13,sec:'comunicacao',type:'scale',text:'Sua comunicação atual reflete o nível de valor que você entrega?',min:'Não reflete',max:'Reflete plenamente'},
+  {id:14,sec:'comunicacao',type:'choice',text:'Com que frequência você comunica ativamente sua marca?',opts:['Todos os dias','3 a 4x por semana','1 a 2x por semana','Esporadicamente','Raramente ou nunca']},
+  {id:15,sec:'comunicacao',type:'choice',text:'Qual descreve melhor o conteúdo que você publica?',opts:['Estratégico — constrói autoridade','Educativo — ensina e gera valor','Promocional — foca em vendas','Pessoal — rotina e bastidores','Misto sem estratégia clara']},
+  {id:16,sec:'comunicacao',type:'scale',text:'Quão consistente é sua comunicação ao longo do tempo?',min:'Muito irregular',max:'Altamente consistente'},
+  {id:17,sec:'marca',type:'choice',text:'Como você avalia a identidade visual atual da sua marca?',opts:['Profissional e alinhada ao posicionamento','Razoável, mas precisa de atualização','Genérica ou amadora','Estou construindo agora','Não tenho identidade visual definida']},
+  {id:18,sec:'marca',type:'scale',text:'Sua identidade visual transmite o nível de qualidade que você entrega?',min:'Não transmite',max:'Transmite muito bem'},
+  {id:19,sec:'marca',type:'choice',text:'Sua marca tem nome, logo e identidade visual consistentes em todos os canais?',opts:['Sim, tudo consistente','Em maioria, com algumas variações','Cada canal usa elementos diferentes','Não tenho consistência visual']},
+  {id:20,sec:'marca',type:'scale',text:'O quanto sua marca é memorável para quem a encontra pela primeira vez?',min:'Pouco memorável',max:'Muito memorável'},
+  {id:21,sec:'marca',type:'text',text:'Descreva a personalidade da sua marca em 3 palavras.',hint:'Pense em como você quer que as pessoas sintam ao interagir com sua marca.'},
+  {id:22,sec:'percepcao',type:'scale',text:'Você sente que poderia cobrar mais, mas o mercado não aceita?',min:'Não sinto isso',max:'Sinto muito fortemente'},
+  {id:23,sec:'percepcao',type:'choice',text:'Com que frequência você precisa justificar o preço na venda?',opts:['Raramente — o valor é percebido','Às vezes — depende do cliente','Frequentemente — sempre tenho objeções','Quase sempre — preço é a principal barreira']},
+  {id:24,sec:'percepcao',type:'scale',text:'Quão alinhada está a percepção do mercado com a imagem que você quer projetar?',min:'Totalmente desalinhada',max:'Completamente alinhada'},
+  {id:25,sec:'percepcao',type:'choice',text:'Como seus clientes te descrevem para outras pessoas?',opts:['Com clareza — sabem exatamente o que faço','De forma vaga — sabem que sou bom, mas não explicam bem','De forma genérica — igual a outros do mercado','Não tenho clareza sobre como me descrevem']},
+  {id:26,sec:'percepcao',type:'scale',text:'Você recebe clientes que chegam já convencidos, sem precisar de muito convencimento?',min:'Quase nunca',max:'Com frequência'},
+  {id:27,sec:'diferenciacao',type:'scale',text:'Quão diferente você parece ser dos seus principais concorrentes?',min:'Muito parecido',max:'Muito diferente'},
+  {id:28,sec:'diferenciacao',type:'choice',text:'Sua diferenciação é baseada principalmente em…',opts:['Metodologia ou processo proprietário','Resultado ou entrega específica','Experiência e atendimento','Nicho ou especialização','Preço ou custo-benefício','Ainda não tenho diferenciação clara']},
+  {id:29,sec:'diferenciacao',type:'scale',text:'Quão claramente você comunica o que te diferencia no seu marketing?',min:'Não comunico',max:'Comunico muito bem'},
+  {id:30,sec:'diferenciacao',type:'choice',text:'Se um cliente te comparar com um concorrente, o que acontece?',opts:['Eles escolhem por valor, não por preço','Às vezes perco para preço mais baixo','Geralmente perco na comparação de preços','Não consigo diferenciar claramente na venda']},
+  {id:31,sec:'diferenciacao',type:'text',text:'Qual é o principal resultado tangível que seu cliente obtém com você?',hint:'Seja específico. Resultados claros constroem percepção de valor.'},
+  {id:32,sec:'maturidade',type:'choice',text:'Você já investiu formalmente em branding ou identidade de marca?',opts:['Sim, com profissional especializado','Sim, mas de forma básica / DIY','Estou iniciando agora','Ainda não investi']},
+  {id:33,sec:'maturidade',type:'choice',text:'Você tem clareza sobre o propósito e valores da sua marca?',opts:['Sim, está documentado e praticado','Tenho internamente, mas não comunico bem','Tenho uma ideia vaga','Nunca refleti profundamente sobre isso']},
+  {id:34,sec:'maturidade',type:'scale',text:'O quanto sua marca reflete quem você realmente é e o que você acredita?',min:'Pouco autêntica',max:'Muito autêntica'},
+  {id:35,sec:'maturidade',type:'choice',text:'Qual é sua principal expectativa com este diagnóstico?',opts:['Entender por que minha marca parece genérica','Descobrir como aumentar percepção de valor','Clarificar meu posicionamento','Identificar onde devo investir em marca','Validar o que já estou fazendo']},
+];
+
+let cur=0,ans={},reportData=null;
+const $=id=>document.getElementById(id);
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0);}
+function startDiag(){showScreen('screen-quiz');buildPills();renderQ(0);}
+function buildPills(){$('secPills').innerHTML=SECS.map(s=>`<div class="sec-pill" id="pill-${s.id}">${s.label}</div>`).join('');}
+function activatePill(sid){document.querySelectorAll('.sec-pill').forEach(p=>p.classList.remove('active'));const el=$(`pill-${sid}`);if(el)el.classList.add('active');}
+
+function renderQ(idx){
+  const q=QS[idx],saved=ans[q.id],secLabel=SECS.find(s=>s.id===q.sec)?.label||'';
+  activatePill(q.sec);
+  let h=`<div class="q-card"><div class="q-sec-label">${secLabel}</div><div class="q-counter">Pergunta ${q.id} de ${QS.length}</div><div class="q-text">${q.text}</div>${q.hint?`<div class="q-hint">${q.hint}</div>`:''}`;
+  if(q.type==='choice'){
+    h+=`<div class="opts">`;
+    q.opts.forEach(o=>{const s=saved===o?' sel':'';h+=`<button class="opt${s}" onclick="pickOpt(${q.id},this,'${o.replace(/'/g,"\\'")}')"><div class="opt-radio"></div>${o}</button>`;});
+    h+=`</div>`;
+  }else if(q.type==='scale'){
+    h+=`<div class="scale-row">`;
+    for(let i=1;i<=5;i++){h+=`<button class="scale-btn${saved==i?' sel':''}" onclick="pickScale(${q.id},${i},this)">${i}</button>`;}
+    h+=`</div><div class="scale-labels"><span>${q.min}</span><span>${q.max}</span></div>`;
+  }else{
+    h+=`<textarea class="q-ta" id="qTa" placeholder="Sua resposta…" oninput="pickText(${q.id},this.value)">${saved||''}</textarea>`;
+  }
+  $('qArea').innerHTML=h+`</div>`;
+  updateNav();updateProg();
+  const sc=document.querySelector('.quiz-scroll');if(sc)sc.scrollTop=0;
+}
+
+function pickOpt(qId,btn,val){ans[qId]=val;document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');updateNav();}
+function pickScale(qId,val,btn){ans[qId]=val;document.querySelectorAll('.scale-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');updateNav();}
+function pickText(qId,val){ans[qId]=val.trim()?val:undefined;updateNav();}
+
+function updateNav(){
+  const q=QS[cur],has=!!ans[q.id],isFirst=cur===0,isLast=cur===QS.length-1;
+  $('btnPrev').disabled=isFirst;
+  $('btnNext').disabled=!has;
+  $('btnNext').textContent=isLast?'Gerar Diagnóstico →':'Próximo →';
+  $('btnNext').className='btn-next'+(isLast?' final':'');
+  $('navMid').textContent=`${cur+1} de ${QS.length}`;
+}
+function updateProg(){const p=Math.round(((cur+1)/QS.length)*100);$('progFill').style.width=p+'%';$('progTxt').textContent=`${cur+1} / ${QS.length}`;}
+function goNext(){if($('btnNext').disabled)return;if(cur<QS.length-1){cur++;renderQ(cur);}else submitDiag();}
+function goPrev(){if(cur>0){cur--;renderQ(cur);}}
+
+async function submitDiag(){showScreen('screen-loading');animSteps();const r=await callAI();reportData=r;renderReport(r);}
+
+function animSteps(){
+  for(let i=0;i<5;i++)setTimeout(()=>{
+    if(i>0){const p=$(`ls${i-1}`);if(p){p.classList.remove('active');p.classList.add('done');}}
+    const c=$(`ls${i}`);if(c)c.classList.add('active');
+  },i*1300);
+}
+
+async function callAI(){
+  const summary=QS.map(q=>`[${q.sec.toUpperCase()}] ${q.text}\nResposta: ${ans[q.id]||'(não respondida)'}`).join('\n\n');
+  const prompt=`Você é um estrategista sênior de marca da FIDE Design. Analise as respostas e gere um relatório estratégico em JSON puro (sem markdown, sem backticks).
+
+RESPOSTAS:
+${summary}
+
+Retorne APENAS este JSON:
+{"nomeEmpresa":"inferir ou 'sua empresa'","scoreGeral":<0-100>,"scoreCaption":"<frase curta>","scores":{"clareza":<0-100>,"consistencia":<0-100>,"diferenciacao":<0-100>,"percepcaoValor":<0-100>,"posicionamento":<0-100>,"comunicacao":<0-100>},"insightChave":"<frase de impacto>","diagnostico":"<2-3 parágrafos separados por \\n\\n>","gargalos":[{"titulo":"","descricao":""},{"titulo":"","descricao":""},{"titulo":"","descricao":""}],"forcas":[{"titulo":"","descricao":""},{"titulo":"","descricao":""}],"oportunidades":[{"titulo":"","descricao":""},{"titulo":"","descricao":""},{"titulo":"","descricao":""}],"plano":["","","",""]}
+
+Tom: profissional, direto, estratégico. Nunca genérico. Scores honestos.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const txt=data.content.map(c=>c.text||'').join('');
+    return JSON.parse(txt.replace(/```json|```/g,'').trim());
+  }catch(e){return fallback();}
+}
+
+function fallback(){
+  return{nomeEmpresa:'sua empresa',scoreGeral:56,scoreCaption:'Marca com potencial estratégico, mas com gargalos críticos de comunicação e diferenciação.',scores:{clareza:50,consistencia:46,diferenciacao:53,percepcaoValor:60,posicionamento:55,comunicacao:48},insightChave:'Sua marca não tem problema de qualidade — tem problema de linguagem. O mercado paga pelo que consegue perceber, não pelo que você entrega.',diagnostico:'Com base nas respostas, sua marca demonstra potencial estratégico real, mas enfrenta desalinhamento entre a intenção de posicionamento e os sinais que chegam ao mercado.\n\nA comunicação atual tende a ser mais operacional do que estratégica, posicionando sua marca de forma similar à concorrência — mesmo que sua entrega seja superior.',gargalos:[{titulo:'Diferenciação invisível',descricao:'Você entrega mais do que comunica. O que te torna diferente não está sendo transmitido com clareza suficiente.'},{titulo:'Inconsistência de comunicação',descricao:'A irregularidade na presença de marca cria ruído de posicionamento — o mercado não constrói uma percepção clara.'},{titulo:'Gap de percepção de valor',descricao:'Há desconexão entre o nível de qualidade que você entrega e o que sua comunicação projeta.'}],forcas:[{titulo:'Consciência estratégica',descricao:'Buscar um diagnóstico indica maturidade e disposição para evoluir.'},{titulo:'Clareza do cliente ideal',descricao:'Você demonstra bom entendimento de quem atende — base sólida para construir mensagem relevante.'}],oportunidades:[{titulo:'Narrativa de diferenciação',descricao:'Transformar seu diferencial real em linguagem clara pode mudar significativamente a percepção de valor.'},{titulo:'Posicionamento visual',descricao:'Uma identidade mais alinhada ao posicionamento elevaria a percepção antes mesmo da venda.'},{titulo:'Conteúdo de autoridade',descricao:'Migrar de comunicação operacional para estratégica pode atrair clientes já convencidos do valor.'}],plano:['Escreva seu diferencial em uma frase de 10 palavras e teste com 5 pessoas do seu público','Audite os últimos 30 posts: que % constrói autoridade vs. é apenas operacional ou promocional?','Defina 3 palavras da personalidade da marca e aplique em toda comunicação desta semana','Reescreva a bio de todas as redes com seu posicionamento real e o resultado tangível que você entrega']};
+}
+
+/* ── SHARE ── */
+function buildShareUrl(r){
+  const d={s:r.scoreGeral,e:r.nomeEmpresa!=='sua empresa'?r.nomeEmpresa:'',i:r.insightChave,sc:r.scores};
+  try{return window.location.href.split('?')[0]+'?r='+btoa(unescape(encodeURIComponent(JSON.stringify(d))));}
+  catch(e){return window.location.href;}
+}
+
+function copyLink(){
+  if(!reportData)return;
+  const url=buildShareUrl(reportData);
+  const btn=$('btnCopy'),msg=$('copyMsg');
+  navigator.clipboard.writeText(url).then(()=>{
+    btn.textContent='✓ Copiado!';btn.classList.add('done');msg.classList.add('show');
+    setTimeout(()=>{btn.textContent='Copiar Link';btn.classList.remove('done');msg.classList.remove('show');},2800);
+  }).catch(()=>{const inp=$('shareInput');inp.select();document.execCommand('copy');});
+}
+
+function shareWA(){
+  if(!reportData)return;
+  const url=buildShareUrl(reportData);
+  const msg=`🎯 Fiz o diagnóstico *DNA da Marca™* pela FIDE Design!\n\nScore: *${reportData.scoreGeral}/100*\n\n_"${reportData.insightChave}"_\n\n${url}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+function shareIN(){
+  if(!reportData)return;
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(buildShareUrl(reportData)),'_blank');
+}
+function shareMail(){
+  if(!reportData)return;
+  const url=buildShareUrl(reportData);
+  const s='Diagnóstico DNA da Marca™ — Score '+reportData.scoreGeral+'/100';
+  const b='Olá,\n\nCompartilho meu diagnóstico de marca pela FIDE Design.\n\nScore: '+reportData.scoreGeral+'/100\n\n"'+reportData.insightChave+'"\n\nRelatório completo:\n'+url;
+  window.location.href='mailto:?subject='+encodeURIComponent(s)+'&body='+encodeURIComponent(b);
+}
+
+/* ── RENDER REPORT ── */
+function renderReport(r){
+  showScreen('screen-report');
+  $('scoreNum').textContent=r.scoreGeral;
+  $('scoreCaption').textContent=r.scoreCaption||'';
+  $('rptTitle').textContent='Diagnóstico de Marca'+(r.nomeEmpresa&&r.nomeEmpresa!=='sua empresa'?' · '+r.nomeEmpresa:'');
+  $('rptDate').textContent=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+
+  const lbl={clareza:'Clareza',consistencia:'Consistência',diferenciacao:'Diferenciação',percepcaoValor:'Percepção de Valor',posicionamento:'Posicionamento',comunicacao:'Comunicação'};
+
+  const scCards=Object.entries(r.scores).map(([k,v])=>{
+    const n=Math.max(0,Math.min(100,v));
+    const col=n>=70?'#1A1A1A':n>=50?'#7A7A7A':'#ABABAB';
+    return`<div class="sc-card"><div class="sc-lbl">${lbl[k]||k}</div><div class="sc-bar-row"><div class="sc-track"><div class="sc-fill" style="width:${n}%;background:${col}"></div></div><div class="sc-num">${n}</div></div></div>`;
+  }).join('');
+
+  const mkItems=(arr,cls,icon)=>arr.map(it=>`<div class="item-card"><div class="item-badge ${cls}">${icon}</div><div><div class="item-ttl">${it.titulo}</div><div class="item-dsc">${it.descricao}</div></div></div>`).join('');
+
+  const planHtml=r.plano.map((a,i)=>`<div class="plan-item"><div class="plan-n">${i+1}</div><div class="plan-txt">${a}</div></div>`).join('');
+
+  const shareUrl=buildShareUrl(r);
+
+  $('rptBody').innerHTML=`
+    <div class="insight-box">
+      <div class="ins-tag">Insight Principal</div>
+      <div class="ins-txt">"${r.insightChave}"</div>
+    </div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Scores por Dimensão</div>
+      <div class="scores-grid">${scCards}</div>
+      <div class="chart-box"><canvas id="radar" style="max-height:280px"></canvas></div>
+    </div>
+
+    <div class="r-div"></div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Diagnóstico Geral</div>
+      <div class="r-ttl">O que sua marca provavelmente comunica hoje</div>
+      ${r.diagnostico.split('\n\n').map(p=>`<p class="r-txt" style="margin-bottom:.9rem">${p}</p>`).join('')}
+    </div>
+
+    <div class="r-div"></div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Gargalos Identificados</div>
+      <div class="r-ttl">Onde estão os desalinhamentos</div>
+      <div class="items">${mkItems(r.gargalos,'badge-neg','↓')}</div>
+    </div>
+
+    <div class="r-div"></div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Pontos Fortes</div>
+      <div class="r-ttl">O que está funcionando</div>
+      <div class="items">${mkItems(r.forcas,'badge-pos','↑')}</div>
+    </div>
+
+    <div class="r-div"></div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Oportunidades de Evolução</div>
+      <div class="r-ttl">Para onde sua marca pode ir</div>
+      <div class="items">${mkItems(r.oportunidades,'badge-opp','→')}</div>
+    </div>
+
+    <div class="r-div"></div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Plano de Ação — 30 Dias</div>
+      <div class="r-ttl">Quick wins para começar agora</div>
+      <div class="plan-list">${planHtml}</div>
+    </div>
+
+    <div class="r-div"></div>
+
+    <div class="r-sec">
+      <div class="r-lbl">Compartilhar Diagnóstico</div>
+      <div class="r-ttl">Envie seu resultado para alguém</div>
+      <p class="r-txt" style="margin-bottom:1.25rem">O link abaixo contém seu score e dimensões codificados. Quem abrir verá seu diagnóstico completo.</p>
+      <div class="share-bar">
+        <div class="share-lbl">Link</div>
+        <div class="share-input-wrap">
+          <input class="share-input" id="shareInput" type="text" readonly value="${shareUrl}" onclick="this.select()" title="Clique para selecionar">
+          <button class="btn-copy" id="btnCopy" onclick="copyLink()">Copiar Link</button>
+        </div>
+        <span class="copy-confirm" id="copyMsg">✓ Copiado!</span>
+        <div class="share-sep"></div>
+        <div class="share-socials">
+          <button class="btn-soc" onclick="shareWA()" title="WhatsApp">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </button>
+          <button class="btn-soc" onclick="shareIN()" title="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </button>
+          <button class="btn-soc" onclick="shareMail()" title="E-mail">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <div class="cta-tag">Próximo Nível · FIDE Design</div>
+      <div class="cta-ttl">Clareza é o início,<br>não o destino.</div>
+      <p class="cta-txt">Se você deseja aprofundar esse diagnóstico e transformar clareza em posicionamento real, a FIDE pode ajudar. Trabalhamos com empreendedores que querem marca como ativo estratégico.</p>
+      <button class="btn-cta">Quero evoluir minha marca →</button>
+    </div>
+  `;
+
+  setTimeout(()=>{
+    const ctx=$('radar');if(!ctx)return;
+    const keys=Object.keys(r.scores);
+    new Chart(ctx,{type:'radar',data:{labels:keys.map(k=>lbl[k]||k),datasets:[{data:keys.map(k=>r.scores[k]),backgroundColor:'rgba(26,26,26,0.06)',borderColor:'#3C3C3C',borderWidth:1.5,pointBackgroundColor:'#1A1A1A',pointRadius:3.5}]},options:{responsive:true,scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:'rgba(0,0,0,0.07)'},angleLines:{color:'rgba(0,0,0,0.07)'},pointLabels:{font:{size:10,family:'Montserrat',weight:'600'},color:'#7A7A7A'}}},plugins:{legend:{display:false}}}});
+  },250);
+}
+</script>
+</body>
+</html>
