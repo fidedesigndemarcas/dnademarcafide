@@ -1,0 +1,1947 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FIDE | Diagnóstico de Marca</title>
+    <meta
+      name="description"
+      content="Plataforma FIDE de análise de posicionamento, força de marca, identidade visual e pontos de contato."
+    />
+    <style>
+:root {
+  color-scheme: light;
+  --black: #030303;
+  --ink: #111111;
+  --graphite: #5f5f5f;
+  --mid: #8a8a8a;
+  --line: #d6d6d6;
+  --soft-line: #ececec;
+  --paper: #f7f7f5;
+  --panel: #ffffff;
+  --inverse: #ffffff;
+  --radius: 2px;
+  --shadow: 0 28px 80px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  height: 100vh;
+  padding: 34px 28px;
+  background: var(--black);
+  color: var(--inverse);
+}
+
+.brand-lockup {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.36);
+}
+
+.brand-lockup img {
+  width: 172px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.brand-lockup strong,
+.brand-lockup span {
+  display: block;
+}
+
+.brand-lockup strong {
+  font-size: 0.96rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.brand-lockup div span {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.82rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  color: var(--graphite);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sidebar .eyebrow {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.score-panel,
+.draft-card,
+.identity-preview,
+.metric-stack,
+form,
+.report,
+.roadmap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.score-panel {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: transparent;
+  padding: 20px 0 24px;
+  box-shadow: none;
+}
+
+.score-panel strong {
+  display: block;
+  margin: 18px 0 8px;
+  color: var(--inverse);
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 900;
+  line-height: 0.84;
+}
+
+.score-panel span:last-child,
+.draft-card p {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.section-nav {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.section-nav a {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  color: var(--inverse);
+  padding: 15px 0;
+  text-decoration: none;
+}
+
+.section-nav a::after {
+  content: "->";
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.section-nav a:hover,
+.section-nav a:focus-visible {
+  color: rgba(255, 255, 255, 0.72);
+  outline: none;
+}
+
+.draft-card {
+  margin-top: auto;
+  border-color: rgba(255, 255, 255, 0.24);
+  background: transparent;
+  padding: 18px 0 0;
+  box-shadow: none;
+}
+
+main {
+  min-width: 0;
+  padding: 34px;
+}
+
+.workspace-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: start;
+  margin: 0 auto 26px;
+  max-width: 1380px;
+  padding: 0 0 30px;
+  border-bottom: 1px solid var(--black);
+}
+
+.presentation-line {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 42px;
+  color: var(--ink);
+  font-weight: 750;
+}
+
+.presentation-line::before {
+  content: "";
+  height: 1px;
+  background: var(--black);
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.presentation-line span + span::before {
+  content: "•";
+  margin-right: 20px;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 900px;
+  margin-bottom: 16px;
+  font-size: clamp(3.4rem, 9vw, 8.6rem);
+  font-weight: 950;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+.header-subtitle {
+  max-width: 680px;
+  margin-bottom: 0;
+  color: var(--graphite);
+  font-size: clamp(1rem, 1.4vw, 1.24rem);
+  line-height: 1.45;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.55rem, 2.5vw, 2.7rem);
+  font-weight: 900;
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+h3 {
+  margin-bottom: 12px;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.header-actions,
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  border-radius: var(--radius);
+  padding: 11px 15px;
+  border: 1px solid currentColor;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.primary-button {
+  background: var(--black);
+  color: var(--inverse);
+}
+
+.primary-button:hover,
+.primary-button:focus-visible {
+  background: #2a2a2a;
+}
+
+.secondary-button {
+  background: transparent;
+  color: var(--black);
+}
+
+.ghost-button {
+  width: 100%;
+  background: transparent;
+  color: var(--inverse);
+}
+
+.large {
+  min-height: 54px;
+  padding-inline: 20px;
+  font-size: 1rem;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 22px;
+  align-items: start;
+  margin: 0 auto;
+  max-width: 1380px;
+}
+
+.questionnaire {
+  overflow: hidden;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  border-bottom: 1px solid var(--black);
+  background: var(--panel);
+}
+
+.progress-wrap {
+  width: min(240px, 45%);
+}
+
+.progress-wrap span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--graphite);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-align: right;
+}
+
+.progress-bar {
+  overflow: hidden;
+  height: 5px;
+  background: var(--soft-line);
+}
+
+.progress-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--black);
+  transition: width 180ms ease;
+}
+
+fieldset {
+  margin: 0;
+  padding: 28px;
+  border: 0;
+  border-bottom: 1px solid var(--soft-line);
+}
+
+legend {
+  margin-bottom: 12px;
+  padding: 0;
+  font-size: clamp(1.05rem, 1.3vw, 1.34rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.field-note {
+  max-width: 840px;
+  margin: 0 0 18px;
+  color: var(--graphite);
+  line-height: 1.5;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  color: var(--graphite);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+label strong {
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+label small {
+  min-height: 44px;
+  color: var(--graphite);
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+  color: var(--ink);
+  padding: 12px 13px;
+  outline: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--black);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.12);
+}
+
+input[type="range"] {
+  padding: 0;
+  accent-color: var(--black);
+}
+
+.field-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.field-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.range-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.equity-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.range-grid label,
+.field-grid label:has(input[type="range"]) {
+  align-content: start;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fbfbfa;
+}
+
+[data-range-value] {
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--black);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.touchpoint-list {
+  display: grid;
+  gap: 10px;
+}
+
+.touchpoint-list label {
+  grid-template-columns: 18px minmax(130px, 1fr) 130px;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fbfbfa;
+  color: var(--ink);
+}
+
+.touchpoint-list input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--black);
+}
+
+.touchpoint-list select {
+  padding: 8px 10px;
+}
+
+.form-actions {
+  justify-content: flex-end;
+  padding: 24px 28px 28px;
+  background: var(--panel);
+}
+
+.live-panel {
+  position: sticky;
+  top: 28px;
+  display: grid;
+  gap: 16px;
+}
+
+.identity-preview {
+  overflow: hidden;
+  padding: 24px;
+}
+
+.preview-label {
+  display: block;
+  margin-bottom: 52px;
+  padding-top: 12px;
+  border-top: 1px solid var(--black);
+  color: var(--graphite);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.identity-preview strong {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 2.4rem;
+  font-weight: 950;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.identity-preview p {
+  min-height: 84px;
+  color: var(--graphite);
+  line-height: 1.5;
+}
+
+.signal-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 2fr;
+  gap: 12px;
+  height: 76px;
+  margin: 26px 0 0;
+  align-items: end;
+}
+
+.signal-strip span {
+  display: block;
+  background: var(--mid);
+}
+
+.signal-strip span:nth-child(1) {
+  height: 76px;
+}
+
+.signal-strip span:nth-child(2) {
+  height: 48px;
+}
+
+.signal-strip span:nth-child(3) {
+  height: 26px;
+}
+
+.signal-strip span:nth-child(4) {
+  height: 1px;
+  align-self: center;
+  background: var(--black);
+}
+
+.metric-stack {
+  display: grid;
+  box-shadow: none;
+}
+
+.metric-stack div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.metric-stack div:last-child {
+  border-bottom: 0;
+}
+
+.metric-stack span {
+  color: var(--graphite);
+  font-weight: 800;
+}
+
+.metric-stack strong {
+  font-size: 1.05rem;
+  font-weight: 950;
+}
+
+.report,
+.roadmap {
+  margin: 24px auto 0;
+  max-width: 1380px;
+  padding: 28px;
+}
+
+.report-empty {
+  max-width: 760px;
+}
+
+.report-empty p,
+.report-head p,
+.report-grid p,
+.verdict-badge span {
+  color: var(--graphite);
+  line-height: 1.56;
+}
+
+.report-content.hidden,
+.roadmap.hidden,
+.hidden {
+  display: none;
+}
+
+.report-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  gap: 22px;
+  align-items: stretch;
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--black);
+}
+
+.verdict-badge {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  border-radius: var(--radius);
+  padding: 22px;
+  background: var(--black);
+  color: #ffffff;
+}
+
+.verdict-badge span {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.verdict-badge strong {
+  margin-top: 10px;
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1.06;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.report-grid article,
+.timeline-grid article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  background: #ffffff;
+}
+
+.pillar-bars {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.pillar {
+  display: grid;
+  gap: 7px;
+}
+
+.pillar > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--graphite);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.pillar-track {
+  overflow: hidden;
+  height: 7px;
+  background: var(--soft-line);
+}
+
+.pillar-track span {
+  display: block;
+  height: 100%;
+  background: var(--black);
+}
+
+.split-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+ul {
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+li {
+  margin-bottom: 8px;
+  color: var(--graphite);
+  line-height: 1.45;
+}
+
+.manual-list {
+  display: grid;
+  gap: 10px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.manual-list li {
+  margin: 0;
+  padding: 13px 0 13px 14px;
+  border-left: 4px solid var(--black);
+  color: var(--ink);
+}
+
+.roadmap {
+  margin-bottom: 32px;
+}
+
+.timeline-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.timeline-grid article > span {
+  color: var(--graphite);
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 10;
+  transform: translateY(18px);
+  max-width: min(420px, calc(100vw - 32px));
+  border-radius: var(--radius);
+  background: var(--black);
+  color: #ffffff;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.toast.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 1180px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .section-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .section-nav a {
+    border-bottom: 0;
+  }
+
+  .draft-card {
+    margin-top: 0;
+  }
+
+  .analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .live-panel {
+    position: static;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  main {
+    padding: 22px;
+  }
+
+  .workspace-header,
+  .form-header,
+  .report-head {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .presentation-line {
+    grid-template-columns: minmax(56px, 1fr) auto auto;
+    gap: 10px;
+    margin-bottom: 28px;
+    font-size: 0.9rem;
+  }
+
+  .header-actions,
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  .section-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions button,
+  .form-actions button {
+    width: 100%;
+  }
+
+  .field-grid.two,
+  .range-grid,
+  .equity-grid,
+  .report-grid,
+  .timeline-grid,
+  .split-list,
+  .live-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-wrap {
+    width: 100%;
+  }
+
+  .touchpoint-list label {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+
+  .touchpoint-list select {
+    grid-column: 1 / -1;
+  }
+
+  h1 {
+    font-size: clamp(2.45rem, 12vw, 3.2rem);
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .sidebar,
+  .workspace-header,
+  .questionnaire,
+  .live-panel,
+  .toast {
+    display: none !important;
+  }
+
+  .app-shell,
+  .analysis-grid,
+  .report-grid,
+  .timeline-grid {
+    display: block;
+  }
+
+  main,
+  .report,
+  .roadmap {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border: 0;
+  }
+
+  .report-grid article,
+  .timeline-grid article {
+    break-inside: avoid;
+    margin-bottom: 14px;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Painel da análise">
+        <div class="brand-lockup">
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAADU4AAAMsCAYAAAAx6tnWAABBzUlEQVR4nOzd0VUc6ZXA8WsdvUMGIgNwBOAIho1gmAgGP1bVg5iHqno0jmBQBKuJYJgMUAYogoUIZk97wZ7VCNTQXd9Xdfv3O6cPEhL0PRdjyxJ/7l9+//33AAAAAAAAAAAAAAAAAMjkTe0BAAAAAAAAAAAAAAAAALZNOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgnbe1B2Ba/TBeRMR7e160n7q2WX0cWbB+GK8j4rj2HGzM5+PC9cP4e+0Z2Iq/dW2z+u9VAAAAAAAAAAAAAHiSi1MAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAAAOkIpwAAAAAAAAAAAAAAAIB0hFMAAAAAAAAAAAAAAABAOsIpAAAAAAAAAAAAAAAAIB3hFAAAAAAAAAAAAAAAAJCOcAoAAAAAAAAAAAAAAABIRzgFAAAAAAAAAAAAAAAApCOcAgAAAAAAAAAAAAAAANIRTgEAAAAAAAAAAAAAAADpCKcAAAAAAAAAAAAAAACAdIRTAAAAAAAAAAAAAAAAQDrCKQAAAAAAAAAAAAAAACAd4RQAAAAAAAAAAAAAAACQjnAKAAAAAAAAAAAAAAAASEc4BQAAAAAAAAAAAAAAAKQjnAIAAAAAAAAAAAAAAADSEU4BAAAAAAAAAAAAAAAA6QinAAAAAAAAAAAAAAAAgHSEUwAAAAAAAAAAAAAAAEA6wikAAAAAAAAAAAAAAAAgHeEUAAAAAAAAAAAAAAAAkI5wCgAAAAAAAAAAAAAAAEhHOAUAAAAAAAAAAAAAAACkI5wCAAAAAAAAAAAAAAAA0hFOAQAAAAAAAAAAAAAA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FAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgJyj7Xa76zUAAAAAAAAAAAAAAAAAvCsTpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAIEc4BQAAAAAAAAAAAAAAAOQIpwAAAAAAAAAAAAAAAIAc4RQAAAAAAAAAAAAAAACQI5wCAAAAAAAAAAAAAAAAcoRTAAAAAAAAAAAAAAAAQI5wCgAAAAAAAAAAAAAAAMgRTgEAAAAAAAAAAAAAAAA5wikAAAAAAAAAAAAAAAAgRzgFAAAAAAAAAAAAAAAA5AinAAAAAAAAAAAAAAAAgBzhFAAAAAAAAAAAAAAAAJAjnAIAAAAAAAAAAAAAAAByhFMAAAAAAAAAAAAAAABAjnAKAAAAAAAAAAAAAAAAyBFOAQAAAAAAAAAAAAAAADnCKQAAAAAAAAAAAAAAACBHOAUAAAAAAAAAAAAAAADkCKcAAAAAAAAAAAAAAACAHOEUAAAAAAAAAAAAAAAAkCOcAgAAAAAAAAAAAAAAAHKEUwAAAAAAAAAAAAAAAECOcAoAAAAAAAAAAAAAAADIEU4BAAAAAAAAAAAAAAAAOcIpAAAAAAAAAAAAAAAAYNT8AcGmxmxAk4GeAAAAAElFTkSuQmCC" alt="FIDE" />
+          <div>
+            <strong>Diagnóstico de Marca</strong>
+            <span>FIDE design - Marcas Estratégicas</span>
+          </div>
+        </div>
+
+        <div class="score-panel">
+          <span class="eyebrow">Maturidade estimada</span>
+          <strong id="sidebarScore">--</strong>
+          <span id="sidebarVerdict">Preencha o questionário para gerar o veredito.</span>
+        </div>
+
+        <nav class="section-nav" aria-label="Seções do diagnóstico">
+          <a href="#questionario">Questionário</a>
+          <a href="#diagnostico">Diagnóstico</a>
+          <a href="#manual">Manual de ação</a>
+        </nav>
+
+        <div class="draft-card">
+          <span class="eyebrow">Rascunho local</span>
+          <p>As respostas ficam salvas apenas neste navegador.</p>
+          <button class="ghost-button" type="button" id="clearDraft">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 6h18" />
+              <path d="M8 6V4h8v2" />
+              <path d="M19 6l-1 14H6L5 6" />
+              <path d="M10 11v5" />
+              <path d="M14 11v5" />
+            </svg>
+            Limpar respostas
+          </button>
+        </div>
+      </aside>
+
+      <main>
+        <header class="workspace-header">
+          <div>
+            <div class="presentation-line">
+              <span>Branding</span>
+              <span>2026</span>
+            </div>
+            <span class="eyebrow">Plataforma de análise estratégica</span>
+            <h1>Diagnóstico de marca atual.</h1>
+            <p class="header-subtitle">
+              Um questionário direto para transformar percepção, valor de marca e pontos de contato em decisões práticas.
+            </p>
+          </div>
+          <div class="header-actions">
+            <button class="secondary-button" type="button" id="saveDraft">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z" />
+                <path d="M17 21v-8H7v8" />
+                <path d="M7 3v5h8" />
+              </svg>
+              Salvar
+            </button>
+            <button class="primary-button" type="button" id="printReport">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M6 9V2h12v7" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <path d="M6 14h12v8H6z" />
+              </svg>
+              Exportar PDF
+            </button>
+          </div>
+        </header>
+
+        <section class="analysis-grid" id="questionario">
+          <form class="questionnaire" id="brandForm">
+            <div class="form-header">
+              <div>
+                <span class="eyebrow">15 perguntas estratégicas</span>
+                <h2>Dados da marca</h2>
+              </div>
+              <div class="progress-wrap" aria-label="Progresso de preenchimento">
+                <span id="progressLabel">0%</span>
+                <div class="progress-bar">
+                  <span id="progressBar"></span>
+                </div>
+              </div>
+            </div>
+
+            <fieldset>
+              <legend>1. Qual marca será analisada?</legend>
+              <div class="field-grid two">
+                <label>
+                  Nome da marca
+                  <input name="brandName" type="text" placeholder="Ex.: Aurora Labs" required />
+                </label>
+                <label>
+                  Site ou rede principal
+                  <input name="brandUrl" type="text" placeholder="Ex.: auroralabs.com" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>2. Em qual mercado ela atua?</legend>
+              <textarea
+                name="market"
+                rows="3"
+                placeholder="Descreva categoria, região, ticket médio e tipo de compra."
+                required
+              ></textarea>
+            </fieldset>
+
+            <fieldset>
+              <legend>3. Qual é o objetivo de negócio mais importante agora?</legend>
+              <select name="businessGoal" required>
+                <option value="">Selecione</option>
+                <option value="awareness">Ser mais conhecida</option>
+                <option value="conversion">Converter mais clientes</option>
+                <option value="premium">Aumentar preço percebido</option>
+                <option value="expansion">Entrar em novos mercados</option>
+                <option value="retention">Reter e vender mais para a base atual</option>
+                <option value="reputation">Recuperar confiança ou reputação</option>
+              </select>
+            </fieldset>
+
+            <fieldset>
+              <legend>4. Quem é o público prioritário?</legend>
+              <textarea
+                name="audience"
+                rows="4"
+                placeholder="Perfil, dores, desejos, critérios de decisão, objeções e contexto de compra."
+                required
+              ></textarea>
+            </fieldset>
+
+            <fieldset>
+              <legend>5. Qual problema ou desejo central a marca resolve?</legend>
+              <textarea
+                name="problem"
+                rows="3"
+                placeholder="Escreva como o cliente descreveria esse problema."
+                required
+              ></textarea>
+            </fieldset>
+
+            <fieldset>
+              <legend>6. Qual é a promessa principal da marca?</legend>
+              <textarea
+                name="promise"
+                rows="3"
+                placeholder="A transformação, ganho ou alívio que a marca promete entregar."
+                required
+              ></textarea>
+            </fieldset>
+
+            <fieldset>
+              <legend>7. Quais diferenciais são comprováveis?</legend>
+              <textarea
+                name="differentiators"
+                rows="4"
+                placeholder="Liste provas reais: método, experiência, tecnologia, atendimento, cases, certificações, comunidade, garantia."
+              ></textarea>
+            </fieldset>
+
+            <fieldset>
+              <legend>8. Quem são os principais concorrentes ou referências?</legend>
+              <textarea
+                name="competitors"
+                rows="3"
+                placeholder="Cite concorrentes diretos, substitutos e marcas aspiracionais."
+              ></textarea>
+            </fieldset>
+
+            <fieldset>
+              <legend>9. Como a marca é percebida hoje?</legend>
+              <div class="field-grid two">
+                <label>
+                  Adjetivos percebidos
+                  <input name="currentPerception" type="text" placeholder="Ex.: técnica, acessível, confusa" required />
+                </label>
+                <label>
+                  Principais evidências dessa percepção
+                  <input name="perceptionEvidence" type="text" placeholder="Feedbacks, vendas, comentários, pesquisas" />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>10. Como a marca precisa ser percebida para crescer?</legend>
+              <input
+                name="desiredPerception"
+                type="text"
+                placeholder="Ex.: especialista, premium, simples, confiável, inovadora"
+                required
+              />
+            </fieldset>
+
+            <fieldset>
+              <legend>11. Por que clientes escolhem ou deixam de escolher a marca?</legend>
+              <div class="field-grid two">
+                <label>
+                  Motivos de escolha
+                  <textarea name="choiceDrivers" rows="3" placeholder="O que já gera preferência, indicação ou compra."></textarea>
+                </label>
+                <label>
+                  Barreiras de compra
+                  <textarea name="barriers" rows="3" placeholder="Dúvidas, objeções, preço, confiança, comparação, clareza."></textarea>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>12. Como o público responde à sua marca hoje?</legend>
+              <p class="field-note">
+                Brand equity é a força da marca na cabeça do cliente. Responda pensando no comportamento real das pessoas,
+                não no que a empresa gostaria que acontecesse.
+              </p>
+              <div class="range-grid equity-grid">
+                <label>
+                  <strong>Lembrança</strong>
+                  <small>Quando precisam do que você vende, as pessoas lembram da sua marca?</small>
+                  <input name="brandRecall" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="brandRecall">5</span>
+                </label>
+                <label>
+                  <strong>Clareza</strong>
+                  <small>Ao ver sua marca, elas entendem rapidamente o que você faz e para quem?</small>
+                  <input name="offerClarity" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="offerClarity">5</span>
+                </label>
+                <label>
+                  <strong>Confiança</strong>
+                  <small>A marca passa segurança antes da pessoa falar com vendas ou comprar?</small>
+                  <input name="trustSignal" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="trustSignal">5</span>
+                </label>
+                <label>
+                  <strong>Preferência</strong>
+                  <small>Clientes escolhem você mesmo quando existem opções parecidas?</small>
+                  <input name="choicePreference" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="choicePreference">5</span>
+                </label>
+                <label>
+                  <strong>Valor percebido</strong>
+                  <small>As pessoas entendem por que seu preço vale o que custa?</small>
+                  <input name="pricePower" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="pricePower">5</span>
+                </label>
+                <label>
+                  <strong>Indicação</strong>
+                  <small>Clientes recomendam sua marca sem você precisar pedir?</small>
+                  <input name="referralStrength" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="referralStrength">5</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>13. A identidade visual e verbal está consistente?</legend>
+              <div class="field-grid two">
+                <label>
+                  Consistência geral
+                  <input name="identityConsistency" type="range" min="1" max="10" value="5" />
+                  <span data-range-value="identityConsistency">5</span>
+                </label>
+                <label>
+                  O que mais parece desalinhado?
+                  <select name="identityIssue">
+                    <option value="none">Nada crítico</option>
+                    <option value="logo">Logo e sistema visual</option>
+                    <option value="colors">Cores, tipografia e imagens</option>
+                    <option value="voice">Tom de voz e mensagens</option>
+                    <option value="offer">Oferta e proposta de valor</option>
+                    <option value="experience">Experiência nos pontos de contato</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>14. Quais pontos de contato impactam mais a decisão?</legend>
+              <div class="touchpoint-list" id="touchpoints">
+                <label>
+                  <input type="checkbox" name="touchpoints" value="site" />
+                  <span>Site ou landing pages</span>
+                  <select name="touchpoint_site">
+                    <option value="5">Regular</option>
+                    <option value="8">Forte</option>
+                    <option value="3">Fraco</option>
+                    <option value="1">Crítico</option>
+                  </select>
+                </label>
+                <label>
+                  <input type="checkbox" name="touchpoints" value="social" />
+                  <span>Redes sociais</span>
+                  <select name="touchpoint_social">
+                    <option value="5">Regular</option>
+                    <option value="8">Forte</option>
+                    <option value="3">Fraco</option>
+                    <option value="1">Crítico</option>
+                  </select>
+                </label>
+                <label>
+                  <input type="checkbox" name="touchpoints" value="sales" />
+                  <span>Atendimento e vendas</span>
+                  <select name="touchpoint_sales">
+                    <option value="5">Regular</option>
+                    <option value="8">Forte</option>
+                    <option value="3">Fraco</option>
+                    <option value="1">Crítico</option>
+                  </select>
+                </label>
+                <label>
+                  <input type="checkbox" name="touchpoints" value="product" />
+                  <span>Produto, embalagem ou entrega</span>
+                  <select name="touchpoint_product">
+                    <option value="5">Regular</option>
+                    <option value="8">Forte</option>
+                    <option value="3">Fraco</option>
+                    <option value="1">Crítico</option>
+                  </select>
+                </label>
+                <label>
+                  <input type="checkbox" name="touchpoints" value="content" />
+                  <span>Conteúdo e autoridade</span>
+                  <select name="touchpoint_content">
+                    <option value="5">Regular</option>
+                    <option value="8">Forte</option>
+                    <option value="3">Fraco</option>
+                    <option value="1">Crítico</option>
+                  </select>
+                </label>
+                <label>
+                  <input type="checkbox" name="touchpoints" value="community" />
+                  <span>Indicação, eventos ou comunidade</span>
+                  <select name="touchpoint_community">
+                    <option value="5">Regular</option>
+                    <option value="8">Forte</option>
+                    <option value="3">Fraco</option>
+                    <option value="1">Crítico</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>15. Quais recursos e restrições existem para a mudança?</legend>
+              <div class="field-grid two">
+                <label>
+                  Capacidade de execução
+                  <select name="executionCapacity" required>
+                    <option value="">Selecione</option>
+                    <option value="low">Baixa: poucas horas e orçamento limitado</option>
+                    <option value="medium">Média: equipe pequena e orçamento controlado</option>
+                    <option value="high">Alta: equipe, verba e liderança disponíveis</option>
+                  </select>
+                </label>
+                <label>
+                  Prazo desejado
+                  <select name="timeline" required>
+                    <option value="">Selecione</option>
+                    <option value="fast">Até 30 dias</option>
+                    <option value="quarter">Até 90 dias</option>
+                    <option value="semester">Até 6 meses</option>
+                    <option value="year">Até 12 meses</option>
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button class="primary-button large" type="submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 3v18h18" />
+                  <path d="M7 14l3-3 4 4 5-8" />
+                </svg>
+                Gerar diagnóstico
+              </button>
+            </div>
+          </form>
+
+          <aside class="live-panel" aria-label="Resumo em tempo real">
+            <div class="identity-preview">
+              <span class="preview-label">Retrato da marca</span>
+              <strong id="previewName">Marca em análise</strong>
+              <p id="previewPromise">A promessa central aparecerá aqui conforme o questionário for preenchido.</p>
+              <div class="signal-strip" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <div class="metric-stack">
+              <div>
+                <span>Estratégia</span>
+                <strong id="metricStrategy">--</strong>
+              </div>
+              <div>
+                <span>Força da marca</span>
+                <strong id="metricEquity">--</strong>
+              </div>
+              <div>
+                <span>Identidade</span>
+                <strong id="metricIdentity">--</strong>
+              </div>
+              <div>
+                <span>Pontos de contato</span>
+                <strong id="metricTouchpoints">--</strong>
+              </div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="report" id="diagnostico" aria-live="polite">
+          <div class="report-empty" id="emptyReport">
+            <span class="eyebrow">Diagnóstico</span>
+            <h2>O relatório aparecerá aqui após o preenchimento mínimo.</h2>
+            <p>
+              A plataforma cruza clareza estratégica, força de marca, identidade e pontos de contato para indicar se a marca
+              deve ser mantida, ajustada, reposicionada ou redesenhada.
+            </p>
+          </div>
+
+          <div class="report-content hidden" id="reportContent">
+            <div class="report-head">
+              <div>
+                <span class="eyebrow">Diagnóstico central</span>
+                <h2 id="diagnosisTitle"></h2>
+                <p id="diagnosisSummary"></p>
+              </div>
+              <div class="verdict-badge">
+                <span id="scoreLabel"></span>
+                <strong id="verdictLabel"></strong>
+              </div>
+            </div>
+
+            <div class="report-grid">
+              <article>
+                <span class="eyebrow">Percepção e valor de marca</span>
+                <h3 id="equityTitle"></h3>
+                <p id="equityText"></p>
+                <div class="pillar-bars" id="pillarBars"></div>
+              </article>
+
+              <article>
+                <span class="eyebrow">Erros e acertos</span>
+                <h3>Pontos de contato</h3>
+                <div class="split-list">
+                  <div>
+                    <strong>Acertos</strong>
+                    <ul id="touchpointWins"></ul>
+                  </div>
+                  <div>
+                    <strong>Erros</strong>
+                    <ul id="touchpointErrors"></ul>
+                  </div>
+                </div>
+              </article>
+
+              <article>
+                <span class="eyebrow">Veredito</span>
+                <h3 id="verdictTitle"></h3>
+                <p id="verdictText"></p>
+              </article>
+
+              <article>
+                <span class="eyebrow">Manual de correção</span>
+                <h3>O que corrigir e potencializar</h3>
+                <ul class="manual-list" id="manualList"></ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="roadmap hidden" id="manual">
+          <div>
+            <span class="eyebrow">Oportunidades de melhoria</span>
+            <h2>Plano de implementação</h2>
+          </div>
+          <div class="timeline-grid">
+            <article>
+              <span>Curto prazo</span>
+              <h3>0-30 dias</h3>
+              <ul id="shortActions"></ul>
+            </article>
+            <article>
+              <span>Médio prazo</span>
+              <h3>31-90 dias</h3>
+              <ul id="mediumActions"></ul>
+            </article>
+            <article>
+              <span>Longo prazo</span>
+              <h3>3-12 meses</h3>
+              <ul id="longActions"></ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+const STORAGE_KEY = "fide-brand-diagnosis-v2";
+
+const form = document.querySelector("#brandForm");
+const toast = document.querySelector("#toast");
+const progressBar = document.querySelector("#progressBar");
+const progressLabel = document.querySelector("#progressLabel");
+const requiredFields = [...form.querySelectorAll("[required]")];
+
+const touchpointLabels = {
+  site: "Site ou landing pages",
+  social: "Redes sociais",
+  sales: "Atendimento e vendas",
+  product: "Produto, embalagem ou entrega",
+  content: "Conteúdo e autoridade",
+  community: "Indicação, eventos ou comunidade"
+};
+
+const businessGoalLabels = {
+  awareness: "ganhar conhecimento de marca",
+  conversion: "converter mais clientes",
+  premium: "aumentar valor percebido e preço",
+  expansion: "entrar em novos mercados",
+  retention: "reter e expandir a base atual",
+  reputation: "recuperar confiança e reputação"
+};
+
+const issueLabels = {
+  none: "não há desalinhamento crítico declarado",
+  logo: "o logo e o sistema visual não sustentam a estratégia",
+  colors: "cores, tipografia e imagens criam leitura inconsistente",
+  voice: "o tom de voz e as mensagens enfraquecem a proposta de valor",
+  offer: "a oferta ainda não traduz a proposta de valor com clareza",
+  experience: "a experiência nos pontos de contato quebra a promessa"
+};
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("visible");
+  window.clearTimeout(showToast.timeout);
+  showToast.timeout = window.setTimeout(() => toast.classList.remove("visible"), 2600);
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function textScore(text = "", idealWords = 12) {
+  const words = text
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  if (!words) return 0;
+  return clamp(Math.round((words / idealWords) * 10), 2, 10);
+}
+
+function splitTags(value = "") {
+  return value
+    .split(/[,;|]/)
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function overlapScore(current, desired) {
+  const currentTags = splitTags(current);
+  const desiredTags = splitTags(desired);
+  if (!currentTags.length || !desiredTags.length) return 5;
+  const overlap = desiredTags.filter((tag) =>
+    currentTags.some((currentTag) => currentTag.includes(tag) || tag.includes(currentTag))
+  ).length;
+  return clamp(Math.round((overlap / desiredTags.length) * 10), 1, 10);
+}
+
+function getFormData() {
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.touchpoints = [...form.querySelectorAll('input[name="touchpoints"]:checked')].map((input) => {
+    const score = Number(form.elements[`touchpoint_${input.value}`].value);
+    return {
+      key: input.value,
+      label: touchpointLabels[input.value],
+      score
+    };
+  });
+
+  [
+    "brandRecall",
+    "offerClarity",
+    "trustSignal",
+    "choicePreference",
+    "pricePower",
+    "referralStrength",
+    "identityConsistency"
+  ].forEach((key) => {
+    data[key] = Number(data[key] || 0);
+  });
+
+  return data;
+}
+
+function calculate(data) {
+  const clarity =
+    (textScore(data.audience, 18) +
+      textScore(data.problem, 12) +
+      textScore(data.promise, 10) +
+      textScore(data.differentiators, 12) +
+      textScore(data.choiceDrivers, 10)) /
+    5;
+  const proof = textScore(data.differentiators, 14);
+  const barriers = textScore(data.barriers, 10);
+  const equityRaw =
+    (data.brandRecall +
+      data.offerClarity +
+      data.trustSignal +
+      data.choicePreference +
+      data.pricePower +
+      data.referralStrength) /
+    6;
+  const perceptionFit = overlapScore(data.currentPerception, data.desiredPerception);
+  const touchpointRaw = data.touchpoints.length
+    ? data.touchpoints.reduce((sum, item) => sum + item.score, 0) / data.touchpoints.length
+    : 4;
+  const execution =
+    data.executionCapacity === "high" ? 8 : data.executionCapacity === "medium" ? 6 : data.executionCapacity === "low" ? 4 : 5;
+
+  const strategy = Math.round((clarity * 0.65 + proof * 0.35) * 10);
+  const equity = Math.round((equityRaw * 0.75 + perceptionFit * 0.25) * 10);
+  const identity = Math.round((data.identityConsistency * 0.75 + perceptionFit * 0.25) * 10);
+  const touchpoints = Math.round(touchpointRaw * 10);
+  const readiness = Math.round((execution * 0.7 + (10 - Math.min(barriers, 10)) * 0.3) * 10);
+
+  const score = Math.round(strategy * 0.28 + equity * 0.27 + identity * 0.22 + touchpoints * 0.16 + readiness * 0.07);
+  const gap = 100 - Math.round(perceptionFit * 10);
+
+  return {
+    strategy,
+    equity,
+    identity,
+    touchpoints,
+    readiness,
+    score,
+    gap,
+    perceptionFit: Math.round(perceptionFit * 10),
+    clarity: Math.round(clarity * 10),
+    proof: Math.round(proof * 10)
+  };
+}
+
+function getVerdict(scores, data) {
+  const hasCriticalTouchpoint = data.touchpoints.some((item) => item.score <= 3);
+  const issueIsStructural = ["logo", "offer", "experience"].includes(data.identityIssue);
+
+  if (scores.score >= 78 && scores.gap <= 35 && !hasCriticalTouchpoint) {
+    return {
+      label: "Manter e otimizar",
+      title: "Não há necessidade de mudança estrutural.",
+      summary:
+        "A marca já tem base suficiente para crescer. O melhor caminho é lapidar mensagens, elevar consistência e transformar os acertos em sistema repetível.",
+      intensity: "baixo"
+    };
+  }
+
+  if (scores.score >= 62 && scores.gap <= 50) {
+    return {
+      label: "Evoluir a marca atual",
+      title: "Há necessidade de ajuste, não de ruptura.",
+      summary:
+        "A marca tem ativos aproveitáveis, mas parte da proposta ainda se perde na percepção, na identidade ou na jornada. A recomendação é evoluir posicionamento e expressão antes de considerar uma troca profunda.",
+      intensity: "moderado"
+    };
+  }
+
+  if (scores.score >= 45 || issueIsStructural) {
+    return {
+      label: "Reposicionar com cuidado",
+      title: "A marca precisa de reposicionamento guiado.",
+      summary:
+        "Existe desalinhamento relevante entre o que a marca quer significar e o que ela provavelmente comunica hoje. A correção deve começar pela estratégia e depois chegar ao sistema visual, verbal e comercial.",
+      intensity: "alto"
+    };
+  }
+
+  return {
+    label: "Rebrand recomendado",
+    title: "A marca precisa de uma mudança profunda.",
+    summary:
+      "Os sinais indicam baixa força percebida, pouca distinção ou inconsistência nos pontos de contato. A marca atual pode estar limitando confiança, preferência e crescimento.",
+    intensity: "crítico"
+  };
+}
+
+function getDiagnosis(scores, data, verdict) {
+  const brand = data.brandName || "A marca";
+  const goal = businessGoalLabels[data.businessGoal] || "crescer com mais clareza";
+  const issue = issueLabels[data.identityIssue] || issueLabels.none;
+
+  let title = `${brand} tem uma marca em estágio de ${verdict.intensity} ajuste.`;
+  if (scores.score >= 78) title = `${brand} tem uma base de marca saudável.`;
+  if (scores.score < 45) title = `${brand} opera com risco alto de perda de valor percebido.`;
+
+  const summary = `O objetivo declarado é ${goal}. Hoje, o diagnóstico indica ${scores.score}/100 de maturidade: estratégia ${scores.strategy}/100, força de marca ${scores.equity}/100, identidade ${scores.identity}/100 e pontos de contato ${scores.touchpoints}/100. O principal sinal qualitativo é que ${issue}.`;
+
+  return { title, summary };
+}
+
+function getEquityAnalysis(scores, data) {
+  const current = data.currentPerception || "não declarada";
+  const desired = data.desiredPerception || "não declarada";
+  const weakest = [
+    ["lembrança", data.brandRecall],
+    ["clareza da oferta", data.offerClarity],
+    ["confiança antes da compra", data.trustSignal],
+    ["preferência contra concorrentes", data.choicePreference],
+    ["valor percebido do preço", data.pricePower],
+    ["indicação espontânea", data.referralStrength]
+  ].sort((a, b) => a[1] - b[1])[0][0].toLowerCase();
+
+  const title = scores.perceptionFit >= 70 ? "A percepção desejada já aparece parcialmente." : "Há lacuna entre percepção atual e percepção desejada.";
+  const text = `A marca é percebida hoje como ${current}, mas precisa ser lida como ${desired}. O sinal mais frágil da força de marca é ${weakest}; portanto, o plano deve criar mais clareza, prova e repetição antes de pedir mais atenção do mercado.`;
+
+  return { title, text };
+}
+
+function getTouchpointLists(data) {
+  if (!data.touchpoints.length) {
+    return {
+      wins: ["Nenhum ponto de contato prioritário foi selecionado; isso reduz a precisão operacional do diagnóstico."],
+      errors: ["Mapear os canais decisivos é uma urgência, porque a marca pode estar tentando melhorar sem saber onde a decisão realmente acontece."]
+    };
+  }
+
+  const wins = data.touchpoints
+    .filter((item) => item.score >= 8)
+    .map((item) => `${item.label}: já funciona como ativo de confiança e deve virar padrão para os demais canais.`);
+
+  const regular = data.touchpoints
+    .filter((item) => item.score === 5)
+    .map((item) => `${item.label}: cumpre presença, mas precisa de mensagem, prova e chamada de ação mais claras.`);
+
+  const errors = data.touchpoints
+    .filter((item) => item.score <= 3)
+    .map((item) => `${item.label}: ponto de atrito provável, com risco de quebrar promessa ou reduzir conversão.`);
+
+  return {
+    wins: wins.length ? wins : regular.slice(0, 2).concat("Ainda não há um ponto de contato claramente forte; escolha um canal para virar referência da marca."),
+    errors: errors.length ? errors : regular.slice(0, 2).concat("Nenhum ponto foi marcado como crítico, mas canais regulares ainda podem esconder perdas por falta de clareza.")
+  };
+}
+
+function getManual(scores, data) {
+  const manual = [];
+  const strongest = [
+    ["estratégia", scores.strategy],
+    ["força da marca", scores.equity],
+    ["identidade", scores.identity],
+    ["pontos de contato", scores.touchpoints]
+  ].sort((a, b) => b[1] - a[1])[0][0];
+
+  if (scores.strategy < 65) {
+    manual.push("Reescrever posicionamento em uma frase: público prioritário, problema central, promessa, prova e diferença contra alternativas.");
+  } else {
+    manual.push(`Transformar a força em ${strongest} em argumento comercial recorrente, não apenas em percepção interna.`);
+  }
+
+  if (scores.equity < 65) {
+    manual.push("Criar provas fáceis de entender: cases, depoimentos, antes/depois, números, garantias, bastidores do método e comparativos honestos.");
+  } else {
+    manual.push("Potencializar a força da marca repetindo os mesmos códigos, mensagens e provas nos canais que mais influenciam a decisão.");
+  }
+
+  if (scores.identity < 65) {
+    manual.push("Auditar logo, cores, tipografia, imagens e tom de voz contra a percepção desejada; remover códigos que comunicam o oposto.");
+  } else {
+    manual.push("Documentar regras visuais e verbais para que a marca pareça a mesma em venda, conteúdo, produto e atendimento.");
+  }
+
+  if (scores.touchpoints < 65) {
+    manual.push("Corrigir primeiro os pontos de contato fracos, porque eles afetam conversão antes mesmo de uma mudança visual maior ser percebida.");
+  } else {
+    manual.push("Usar os melhores pontos de contato como modelo: capturar estrutura, promessa, prova e experiência para replicar nos demais.");
+  }
+
+  if (data.barriers) {
+    manual.push(`Responder explicitamente às barreiras citadas: ${data.barriers.trim()}. Elas devem aparecer em FAQ, proposta comercial e conteúdo de decisão.`);
+  }
+
+  return manual;
+}
+
+function getRoadmap(scores, data, verdict) {
+  const weakTouchpoints = data.touchpoints.filter((item) => item.score <= 3).map((item) => item.label);
+  const strongestTouchpoints = data.touchpoints.filter((item) => item.score >= 8).map((item) => item.label);
+
+  const short = [
+    "Consolidar a frase de posicionamento e substituir mensagens genéricas por promessa, prova e diferença.",
+    "Criar uma matriz simples de percepção: o que a marca comunica hoje, o que precisa comunicar e quais evidências sustentam a mudança.",
+    weakTouchpoints.length
+      ? `Corrigir o ponto mais crítico primeiro: ${weakTouchpoints[0]}.`
+      : "Selecionar um ponto de contato prioritário para padronizar promessa, prova e chamada de ação."
+  ];
+
+  const medium = [
+    "Construir um mini brand book com identidade visual, tom de voz, claims, mensagens por público e exemplos de aplicação.",
+    "Reorganizar site, apresentações, propostas ou redes sociais para que os argumentos decisivos apareçam antes dos detalhes operacionais.",
+    scores.equity < 65
+      ? "Coletar e publicar provas de valor: depoimentos, cases, métricas, comparativos e demonstrações."
+      : "Criar campanhas de reforço para ampliar lembrança, preferência e distinção nos públicos mais rentáveis."
+  ];
+
+  const long = [
+    "Medir a força da marca trimestralmente com indicadores de lembrança, clareza, confiança, preferência, valor percebido e indicação.",
+    "Transformar os melhores códigos da marca em ativos proprietários: método, linguagem, experiência, comunidade ou plataforma de conteúdo.",
+    verdict.label === "Rebrand recomendado"
+      ? "Planejar uma transição de marca com arquitetura, narrativa de mudança, migração de canais e proteção dos ativos atuais."
+      : "Evoluir a marca por ciclos, usando dados de vendas, retenção e percepção para decidir próximas mudanças."
+  ];
+
+  if (strongestTouchpoints.length) {
+    medium.push(`Replicar o padrão dos canais fortes, começando por ${strongestTouchpoints[0]}.`);
+  }
+
+  if (data.timeline === "fast") {
+    short.unshift("Reduzir o escopo: priorizar mensagem, canal crítico e prova comercial antes de qualquer sistema completo.");
+  }
+
+  return { short, medium, long };
+}
+
+function renderList(element, items) {
+  element.innerHTML = "";
+  items.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    element.append(li);
+  });
+}
+
+function renderPillars(data) {
+  const pillars = [
+    ["Lembrança", data.brandRecall],
+    ["Clareza", data.offerClarity],
+    ["Confiança", data.trustSignal],
+    ["Preferência", data.choicePreference],
+    ["Valor percebido", data.pricePower],
+    ["Indicação", data.referralStrength]
+  ];
+
+  const container = document.querySelector("#pillarBars");
+  container.innerHTML = "";
+  pillars.forEach(([label, value]) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "pillar";
+    wrapper.innerHTML = `
+      <div><span>${label}</span><strong>${value}/10</strong></div>
+      <div class="pillar-track"><span style="width: ${value * 10}%"></span></div>
+    `;
+    container.append(wrapper);
+  });
+}
+
+function renderMetrics(scores, data) {
+  document.querySelector("#metricStrategy").textContent = `${scores.strategy}`;
+  document.querySelector("#metricEquity").textContent = `${scores.equity}`;
+  document.querySelector("#metricIdentity").textContent = `${scores.identity}`;
+  document.querySelector("#metricTouchpoints").textContent = `${scores.touchpoints}`;
+  document.querySelector("#sidebarScore").textContent = scores.score ? `${scores.score}` : "--";
+
+  document.querySelector("#previewName").textContent = data.brandName || "Marca em análise";
+  document.querySelector("#previewPromise").textContent =
+    data.promise || "A promessa central aparecerá aqui conforme o questionário for preenchido.";
+}
+
+function renderReport(data) {
+  const scores = calculate(data);
+  const verdict = getVerdict(scores, data);
+  const diagnosis = getDiagnosis(scores, data, verdict);
+  const equity = getEquityAnalysis(scores, data);
+  const touchpoints = getTouchpointLists(data);
+  const manual = getManual(scores, data);
+  const roadmap = getRoadmap(scores, data, verdict);
+
+  renderMetrics(scores, data);
+  document.querySelector("#sidebarVerdict").textContent = verdict.label;
+  document.querySelector("#emptyReport").classList.add("hidden");
+  document.querySelector("#reportContent").classList.remove("hidden");
+  document.querySelector("#manual").classList.remove("hidden");
+
+  document.querySelector("#diagnosisTitle").textContent = diagnosis.title;
+  document.querySelector("#diagnosisSummary").textContent = diagnosis.summary;
+  document.querySelector("#scoreLabel").textContent = `${scores.score}/100`;
+  document.querySelector("#verdictLabel").textContent = verdict.label;
+
+  document.querySelector("#equityTitle").textContent = equity.title;
+  document.querySelector("#equityText").textContent = equity.text;
+  renderPillars(data);
+
+  renderList(document.querySelector("#touchpointWins"), touchpoints.wins);
+  renderList(document.querySelector("#touchpointErrors"), touchpoints.errors);
+  document.querySelector("#verdictTitle").textContent = verdict.title;
+  document.querySelector("#verdictText").textContent = verdict.summary;
+  renderList(document.querySelector("#manualList"), manual);
+
+  renderList(document.querySelector("#shortActions"), roadmap.short);
+  renderList(document.querySelector("#mediumActions"), roadmap.medium);
+  renderList(document.querySelector("#longActions"), roadmap.long);
+
+  return { scores, verdict };
+}
+
+function updateProgress() {
+  const completed = requiredFields.filter((field) => {
+    if (field.type === "range") return true;
+    return String(field.value || "").trim().length > 0;
+  }).length;
+  const percent = Math.round((completed / requiredFields.length) * 100);
+  progressBar.style.width = `${percent}%`;
+  progressLabel.textContent = `${percent}%`;
+}
+
+function updateRangeLabels() {
+  form.querySelectorAll('input[type="range"]').forEach((input) => {
+    const label = document.querySelector(`[data-range-value="${input.name}"]`);
+    if (label) label.textContent = input.value;
+  });
+}
+
+function saveDraft(silent = false) {
+  const data = getFormData();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  if (!silent) showToast("Rascunho salvo neste navegador.");
+}
+
+function restoreDraft() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+
+  try {
+    const data = JSON.parse(raw);
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "touchpoints" || !form.elements[key]) return;
+      form.elements[key].value = value;
+    });
+
+    if (Array.isArray(data.touchpoints)) {
+      data.touchpoints.forEach((item) => {
+        const checkbox = form.querySelector(`input[name="touchpoints"][value="${item.key}"]`);
+        if (checkbox) checkbox.checked = true;
+        const select = form.elements[`touchpoint_${item.key}`];
+        if (select) select.value = String(item.score);
+      });
+    }
+
+    updateRangeLabels();
+    updateProgress();
+    renderMetrics(calculate(getFormData()), getFormData());
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+function clearDraft() {
+  localStorage.removeItem(STORAGE_KEY);
+  form.reset();
+  updateRangeLabels();
+  updateProgress();
+  document.querySelector("#emptyReport").classList.remove("hidden");
+  document.querySelector("#reportContent").classList.add("hidden");
+  document.querySelector("#manual").classList.add("hidden");
+  document.querySelector("#sidebarScore").textContent = "--";
+  document.querySelector("#sidebarVerdict").textContent = "Preencha o questionário para gerar o veredito.";
+  document.querySelector("#previewName").textContent = "Marca em análise";
+  document.querySelector("#previewPromise").textContent = "A promessa central aparecerá aqui conforme o questionário for preenchido.";
+  ["#metricStrategy", "#metricEquity", "#metricIdentity", "#metricTouchpoints"].forEach((selector) => {
+    document.querySelector(selector).textContent = "--";
+  });
+  showToast("Questionário limpo.");
+}
+
+form.addEventListener("input", () => {
+  updateRangeLabels();
+  updateProgress();
+  const data = getFormData();
+  renderMetrics(calculate(data), data);
+  saveDraft(true);
+});
+
+form.addEventListener("change", () => {
+  updateRangeLabels();
+  updateProgress();
+  saveDraft(true);
+});
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+  saveDraft(true);
+  const result = renderReport(getFormData());
+  showToast(`Diagnóstico gerado: ${result.verdict.label}.`);
+  document.querySelector("#diagnostico").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.querySelector("#saveDraft").addEventListener("click", () => saveDraft());
+document.querySelector("#clearDraft").addEventListener("click", clearDraft);
+document.querySelector("#printReport").addEventListener("click", () => {
+  if (document.querySelector("#reportContent").classList.contains("hidden")) {
+    const data = getFormData();
+    if (!form.reportValidity()) return;
+    renderReport(data);
+  }
+  window.print();
+});
+
+restoreDraft();
+updateRangeLabels();
+updateProgress();
+
+    </script>
+  </body>
+</html>
